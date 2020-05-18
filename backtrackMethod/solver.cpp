@@ -11,11 +11,21 @@ int limit; // limt of the sequence included
 int mx; // temporary maximum
 int length; // length of the sequence to avoid recalculations
 
+bool is_prime(int n) {
+    if (n<2 || n==4)
+        return false;
+    for (int i=2; i<n/2; i++) {
+        if (n%i == 0)
+            return false;
+    }
+    return true;
+}
 
-// return factors and multiples n has below lim
-std::vector<int> fact_mult(int n, int lim) { // working
+std::vector<int> fact_mult(int n, int lim, std::vector<int>& toSkip) {
     std::vector<int> fm;
     for (int i=1; i<=lim; i++) {
+        if (std::find(toSkip.begin(), toSkip.end(), i) != toSkip.end())
+            continue;
         if (n%i==0 && i!=n) // if factor
             fm.push_back(i);
         if (n*i<=lim && i!=1) // if multiple
@@ -33,12 +43,27 @@ void initialize(int lim, int step) {
     myseq[0] = step;
     length++;
     
+    // sequence has at most one primes > limit
+    std::vector<int> toSkip;
+    for (int i=limit/2+1; i<=limit; i++) {
+        if (is_prime(i)) {
+            toSkip.push_back(i);
+        }
+    }
+    // only the first prime will be used
+    if (toSkip.size() > 1) {
+        toSkip.erase(toSkip.begin());
+    }
 
-   // generate the factors/multiples of each number
+    // generate the factors/multiples of each number
     std::vector<int> emp;
     std::vector<int> f;
     for (int i=1; i<=limit; i++) {
-        f = fact_mult(i, limit);
+        if (std::find(toSkip.begin(), toSkip.end(), i) != toSkip.end()) {
+            generalFactMul.push_back(emp);
+            continue;
+        }
+        f = fact_mult(i, limit, toSkip);
         std::sort(f.begin(), f.end());
         generalFactMul.push_back(f);
     }
@@ -65,8 +90,6 @@ void add_one(int const& last) {
             myseq[length] = i;
             length++;
             add_one(i);
-            
-            // after no new possibilities, next poss
             length--;
             myseq[length] = 0;
         }
@@ -74,7 +97,7 @@ void add_one(int const& last) {
     if (length > mx) {
         mx = length;
         solutions.clear();
-        solutions.push_back(std::vector<int>(myseq, myseq+length)); // faster ??
+        solutions.push_back(std::vector<int>(myseq, myseq+length));
     } else if (length == mx)
         solutions.push_back(std::vector<int>(myseq, myseq+length));
 }

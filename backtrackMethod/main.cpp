@@ -13,6 +13,37 @@ the next is either a multiple or a factor
 #include <string>
 #include "solver.h"
 
+void add_primes_solutions(int sz); // add all solutions that were skipped because in primes > limit
+bool is_superior(std::vector<int> A, std::vector<int> B);
+void write_step(int sz, int step);
+int find_longest(int sz); // find longuest sequence from temp files
+int merge_files(int sz); // merge all the temp files of size sz
+void remove_temp_files(int sz);
+bool step_exists(int sz, int step);
+bool size_exists(int sz);
+
+
+void add_primes_solutions(int sz) {
+    std::vector<int> up;
+    for (int i=sz/2+1; i<=sz; i++) {
+        if (is_prime(i))
+            up.push_back(i);
+    }
+    if (up.size() <= 1)
+        return;
+    int prime = up[0];
+    up.erase(up.begin());
+    size_t solSize = solutions.size();
+    for (int p : up) {
+        for (size_t i=0; i<solSize; i++) {
+            if (std::find(solutions[i].begin(), solutions[i].end(), prime) != solutions[i].end()) {
+                std::vector<int> v(solutions[i]);
+                std::replace(v.begin(), v.end(), prime, p);
+                solutions.push_back(v);
+            }
+        }
+    }
+}
 
 void write_step(int sz, int step) {
     std::ofstream myfile("results/" +
@@ -30,8 +61,6 @@ void write_step(int sz, int step) {
     }
 }
 
-// find the longuest sequence from the temp files
-// count the '-'+1 to have the length
 int find_longest(int sz) {
     std::string tempLine;
     int maxLength(0);
@@ -49,7 +78,6 @@ int find_longest(int sz) {
     return maxLength;
 }
 
-// merge all the temp files of size sz
 int merge_files(int sz) {
     std::vector<std::string> res;
     int maxLength(find_longest(sz));
@@ -122,6 +150,7 @@ int main() {
             purge();
             initialize(i, step);
             add_one(step);
+            add_primes_solutions(i);
             write_step(i, step);
             auto stop(std::chrono::high_resolution_clock::now());
             auto duration(std::chrono::duration_cast<std::chrono::seconds>(stop - start));

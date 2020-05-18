@@ -7,6 +7,8 @@
 extern int * myseq; // the sequence
 extern std::vector<std::vector<int>> solutions; // all solutions found
 
+bool is_prime(int n);
+
 // return factors and multiples of n below lim
 std::vector<int> fact_mult(int n, int lim);
 
