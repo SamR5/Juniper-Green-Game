@@ -69,29 +69,33 @@ void initialize(int lim, int step) {
     }
 }
 
-void next_poss(bool poss[], int const &last) {
-    for (size_t i=0; i<generalFactMul[last].size(); i++) {
-        poss[generalFactMul[last][i]] = true;
-    }
-    for (int i=0; i<limit; i++) { // length, to add in arguments
-        poss[myseq[i]] = false;
-    }
+void next_poss(bool poss[], int const& last) {
+    for (int *p=&generalFactMul[last][0]; p-1!=&generalFactMul[last].back(); ++p)
+        *(poss+*p) = true;
+    for (int *p=myseq; p!=myseq+length; ++p)
+        *(poss+*p) = false;
+    //for (size_t i=0; i<generalFactMul[last].size(); i++) {
+    //    poss[generalFactMul[last][i]] = true;
+    //}
+    //for (int i=0; i<length; i++) {
+    //    poss[myseq[i]] = false;
+    //}
 }
 
 void add_one(int const& last) {
-    
     bool nextPoss[limit+1];
     for (int i=0; i<limit+1; i++)
-        nextPoss[i] = false;
+        *(nextPoss+i) = false;
     next_poss(nextPoss, last-1);
     
     for (int i=1; i<=limit; i++) {
-        if (nextPoss[i]) {
-            myseq[length] = i;
-            length++;
+        if (*(nextPoss+i)) {
+            *(myseq+length) = i;
+            ++length;
             add_one(i);
-            length--;
-            myseq[length] = 0;
+            --length;
+            // the sequence is read up to length
+            //myseq[length] = 0;
         }
     }
     if (length > mx) {

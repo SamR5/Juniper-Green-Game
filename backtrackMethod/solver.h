@@ -17,7 +17,7 @@ void initialize(int limit, int step);
 
 // return a vector of the possibilities for the next turn
 // i.e. factors and multiples of last without the ones in the sequence
-void next_poss(bool poss[], int const &last);
+void next_poss(bool poss[], int const& last);
 
 // adds the next integer to the sequence according to the possibilities
 // and backtrack when no possibilities left
