@@ -73,19 +73,17 @@ void initialize(int lim, int step) {
     }
 }
 
-std::vector<int> get_candidates(int idx) {
-    std::vector<int> cnd;
+void update_candidates(std::vector<int> *cnd, int idx) {
     int n = myseq[idx-1];
-    cnd = generalFactMul[n];
-    for (int i=cnd.size()-1; i>=0; i--) {
+    *cnd = generalFactMul[n];
+    for (int i=cnd->size()-1; i>=0; i--) {
         for (int j=0; j<length; j++) {
-            if (cnd[i] == myseq[j]) {
-                cnd.erase(cnd.begin()+i);
+            if ((*cnd)[i] == *(myseq+j)) {
+                cnd->erase(cnd->begin()+i);
                 break;
             }
         }
     }
-    return cnd;
 }
 
 void print() {
@@ -94,40 +92,40 @@ void print() {
     std::cout << std::endl;
 }
 
-bool iterative() {
-    allPoss.clear();
+void iterative() {
+    allPoss = std::vector<std::vector<int>> (limit, std::vector<int>());
     std::vector<int> none(1, -1);
-    std::vector<int> candidates = none;
-    while (1) {
+    int currPoss = 0;
+    allPoss[currPoss] = none;
+    std::vector<int> *candidates = &allPoss[currPoss];
+    while (true) {
         if (myseq[length] == 0) {
-            if (candidates == none)
-                candidates = get_candidates(length);
-            if (candidates.empty()) {
-                if (allPoss.size() == 0)
-                    return false;
-                candidates = allPoss.back();
-                allPoss.pop_back();
-                length--;
-                myseq[length] = 0;
+            if (*candidates == none) {
+                update_candidates(candidates, length);
+            }
+            if (candidates->empty()) {
+                if (allPoss[0].empty()) // 1 because of the steps
+                    return;
+                candidates->clear();
+                candidates = &allPoss[--currPoss];
+                myseq[--length] = 0;
                 continue;
             } else {
-                myseq[length] = candidates.back();
-                candidates.pop_back();
-                allPoss.push_back(candidates);
-                candidates = none;
+                myseq[length] = candidates->back();
+                candidates->pop_back();
+                allPoss[++currPoss] = none;
+                candidates = &allPoss[currPoss];
             }
         }
         length++;
-
-        if (length > mx) {
+        if (length==mx) {
+            solutions.push_back(std::vector<int>(myseq, myseq+length));
+        } else if (length > mx) {
             mx = length;
             solutions.clear();
             solutions.push_back(std::vector<int>(myseq, myseq+length));
-        } else if (length==mx) {
-            solutions.push_back(std::vector<int>(myseq, myseq+length));
         }
     }
-    return true;
 }
 
 void purge() {

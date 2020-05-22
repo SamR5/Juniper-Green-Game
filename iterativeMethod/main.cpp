@@ -149,7 +149,6 @@ int main() {
             auto start(std::chrono::high_resolution_clock::now());
             purge();
             initialize(i, step);
-            //add_one(step);
             iterative();
             add_primes_solutions(i);
             write_step(i, step);

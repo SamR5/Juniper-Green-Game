@@ -16,8 +16,9 @@ At each step, the number added is in the factors and multiples of the previous o
 Since the time increases exponentially with the limit of the sequence, 
 the solver works in steps. It finds all solutions starting by 2, then the solutions starting by 3... and merge the temporary files at the end (allow to quit and restart the program).
 
-## Nested for-loops method
-todo
+## Iterative method
+This is the backtracking method but converted to iterative in a while loop.  
+Now (21/05/2020), it is approximately two times slower (whithout optimizations)  
 
 ## Optimizations
  1. The solutions cannot have more than one prime superior to the limit/2+1.  

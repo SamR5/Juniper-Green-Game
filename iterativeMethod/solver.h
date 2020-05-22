@@ -15,9 +15,9 @@ std::vector<int> fact_mult(int n, int lim);
 // initialize the global variables
 void initialize(int limit, int step);
 
-void update_candidates(int idx);
+void update_candidates(std::vector<int> *cnd, int idx);
 
-bool iterative();
+void iterative();
 
 // empty all global vectors when solving for multiple sizes
 // and reset the sequence
