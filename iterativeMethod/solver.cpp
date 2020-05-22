@@ -86,12 +86,12 @@ std::vector<int> get_candidates(int idx) {
     return cand;
 }
 
-void update_candidates(std::vector<int> &cand, int idx) {
-    cand = generalFactMul[myseq[idx-1]];
+void update_candidate(std::vector<int> *cand, int idx) {
+    *cand = generalFactMul[myseq[idx-1]];
     for (int i=0; i<length; i++) {
-        for (int j=cand.size()-1; j>=0; j--) {
-            if (cand[j] == myseq[i]) {
-                cand.erase(cand.begin()+j);
+        for (int j=cand->size()-1; j>=0; j--) {
+            if ((*cand)[j] == myseq[i]) {
+                cand->erase(cand->begin()+j);
                 break;
             }
         }
@@ -106,6 +106,7 @@ void iterative() {
         if (myseq[length] == 0) {
             if (candidates == None)
                 candidates = get_candidates(length);
+                //update_candidate(candidates, length);
             if (candidates.empty()) {
                 if (stack.empty())
                     return;
