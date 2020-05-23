@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include "solver.h"
 
@@ -10,7 +9,6 @@ std::vector<std::vector<int>> solutions;
 int limit; // limt of the sequence included
 int mx; // temporary maximum
 int length; // length of the sequence to avoid recalculations
-std::vector<std::vector<int>> allPoss; // all possibilities for every indexes
 
 bool is_prime(int n) {
     if (n<2 || n==4)
@@ -75,27 +73,15 @@ void initialize(int lim, int step) {
 
 std::vector<int> get_candidates(int idx) {
     std::vector<int> cand = generalFactMul[myseq[idx-1]];
-    for (int i=0; i<length; i++) {
+    for (int *p=myseq+length-1; p>=myseq; --p) {
         for (int j=cand.size()-1; j>=0; j--) {
-            if (cand[j] == myseq[i]) {
+            if (cand[j] == *p) {
                 cand.erase(cand.begin()+j);
                 break;
             }
         }
     }
     return cand;
-}
-
-void update_candidate(std::vector<int> *cand, int idx) {
-    *cand = generalFactMul[myseq[idx-1]];
-    for (int i=0; i<length; i++) {
-        for (int j=cand->size()-1; j>=0; j--) {
-            if ((*cand)[j] == myseq[i]) {
-                cand->erase(cand->begin()+j);
-                break;
-            }
-        }
-    }
 }
 
 void iterative() {
@@ -106,7 +92,6 @@ void iterative() {
         if (myseq[length] == 0) {
             if (candidates == None)
                 candidates = get_candidates(length);
-                //update_candidate(candidates, length);
             if (candidates.empty()) {
                 if (stack.empty())
                     return;

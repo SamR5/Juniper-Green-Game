@@ -15,7 +15,7 @@ std::vector<int> fact_mult(int n, int lim);
 // initialize the global variables
 void initialize(int limit, int step);
 
-void update_candidates(std::vector<int> *cnd, int idx);
+std::vector<int> get_candidates(int idx);
 
 void iterative();
 
